@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: ${JDBC_URL}
+    username: ${JDBC_USERNAME}
+    password: ${JDBC_PASSWORD}
+    driver-class-name: ${JDBC_DRIVER}
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
