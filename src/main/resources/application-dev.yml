@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: ${COVA_DEV_DB_URL}
+    username: ${COVA_DEV_DB_USERNAME}
+    password: ${COVA_DEV_DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false

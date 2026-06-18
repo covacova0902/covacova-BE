@@ -1,0 +1,20 @@
+services:
+  mysql:
+#    mysql 공식 이미지를 가져와서 컨테이너를 만들겠다.
+    image: mysql:8.0
+    container_name: cova-db
+    env_file:
+      - .env
+    ports:
+      - "3307:3306"
+#   데이터 저장소 연결
+    volumes:
+      - cova-db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  cova-db-data:
