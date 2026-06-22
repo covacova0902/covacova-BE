@@ -24,4 +24,7 @@ springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
   #서버가 반환하는 데이터 타입 설정
   default-produces-media-type: application/json;charset=UTF-8
-
+jwt:
+  secret: ${JWT_SECRET}
+  access-expiration-millis: 3600000
+  refresh-expiration-millis: 1209600000
