@@ -2,6 +2,7 @@ package com.covacova.global.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,16 +11,6 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
-
-    //인증 없이 접근 가능한 경로 목록
-    private static final String[] PERMIT_ALL_PATHS = {
-            "/api/members",   //회원가입(POST /api/members)
-            "/api/swagger-ui.html",
-            "/api/swagger-ui/**",
-            "/swagger-ui/**",
-            "/api-docs",
-            "/api-docs/**"
-    };
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -35,7 +26,14 @@ public class SecurityConfig {
                 .formLogin(formLogin -> formLogin.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(PERMIT_ALL_PATHS).permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/members").permitAll()
+                        .requestMatchers(
+                                "/api/swagger-ui.html",
+                                "/api/swagger-ui/**",
+                                "/swagger-ui/**",
+                                "/api-docs",
+                                "/api-docs/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 );
 
