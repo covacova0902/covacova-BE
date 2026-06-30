@@ -13,7 +13,12 @@ public class SecurityConfig {
 
     //인증 없이 접근 가능한 경로 목록
     private static final String[] PERMIT_ALL_PATHS = {
-            "/api/members"   //회원가입(POST /api/members)
+            "/api/members",   //회원가입(POST /api/members)
+            "/api/swagger-ui.html",
+            "/api/swagger-ui/**",
+            "/swagger-ui/**",
+            "/api-docs",
+            "/api-docs/**"
     };
 
     @Bean
