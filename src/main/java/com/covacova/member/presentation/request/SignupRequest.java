@@ -1,4 +1,4 @@
-package com.covacova.member.presentation;
+package com.covacova.member.presentation.request;
 
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
