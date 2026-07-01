@@ -17,6 +17,7 @@ import tools.jackson.databind.ObjectMapper;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -116,6 +117,48 @@ public class MemberControllerTest {
                 .content(objectMapper.writeValueAsString(request)))
 
                 .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.success").value(false));
+    }
+
+    @Test
+    void 사용가능한_이메일이면_200과_available_true를_반환한다() throws Exception {
+        given(memberService.isEmailAvailable("test@example.com")).willReturn(true);
+
+        mockMvc.perform(get("/api/members/check-email")
+                .param("email", "test@example.com"))
+
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data.available").value(true));
+    }
+
+    @Test
+    void 이미_사용중인_이메일이면_available_false를_반환한다() throws Exception {
+        given(memberService.isEmailAvailable("test@example.com")).willReturn(false);
+
+        mockMvc.perform(get("/api/members/check-email")
+                .param("email", "test@example.com"))
+
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data.available").value(false));
+    }
+
+    @Test
+    void 이메일_형식이_잘못되면_400을_반환한다_check_email() throws Exception {
+        mockMvc.perform(get("/api/members/check-email")
+                .param("email", "not-an-email"))
+
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.success").value(false));
+    }
+
+    @Test
+    void 이메일_파라미터가_비어있으면_400을_반환한다() throws Exception {
+        mockMvc.perform(get("/api/members/check-email")
+                .param("email", ""))
+
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.success").value(false));
     }
 }
