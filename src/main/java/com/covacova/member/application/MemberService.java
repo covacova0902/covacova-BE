@@ -32,4 +32,9 @@ public class MemberService {
 
         return memberRepository.save(member).getMemberId();
     }
+
+    @Transactional(readOnly = true)
+    public boolean isEmailAvailable(String email) {
+        return !memberRepository.existsByEmail(email);
+    }
 }

@@ -85,4 +85,24 @@ public class MemberServiceTest {
         //캡처된 Member의 패스워드가 평문인지 암호화된 값인지 확인
         assertThat(captor.getValue().getPassword()).isEqualTo("encoded-password");
     }
+
+    @Test
+    void 이메일이_존재하지_않으면_사용가능하다고_반환한다() {
+
+        given(memberRepository.existsByEmail("test@example.com")).willReturn(false);
+
+        boolean result = memberService.isEmailAvailable("test@example.com");
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void 이메일이_이미_존재하면_사용불가능하다고_반환한다() {
+
+        given(memberRepository.existsByEmail("test@example.com")).willReturn(true);
+
+        boolean result = memberService.isEmailAvailable("test@example.com");
+
+        assertThat(result).isFalse();
+    }
 }

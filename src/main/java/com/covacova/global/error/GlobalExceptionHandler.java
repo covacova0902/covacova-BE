@@ -3,6 +3,7 @@ package com.covacova.global.error;
 import com.covacova.global.response.ApiResponse;
 import com.covacova.member.exception.DuplicateEmailException;
 import com.covacova.member.exception.NicknameGenerationException;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleNicknameGeneration(NicknameGenerationException e) {
         log.error("닉네임 생성 실패", e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(e.getMessage()));
+    }
+
+    //파라미터 단위 검증 실패 시 예외
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiResponse<Void>> handleConstraintViolation(ConstraintViolationException e) {
+        String message = e.getConstraintViolations().stream()
+                .map(v -> v.getPropertyPath() + ": " + v.getMessage())
+                .collect(Collectors.joining(", "));
+
+        return ResponseEntity.badRequest().body(ApiResponse.error(message));
     }
 
     //위에서 잡지 못한 나머지 예외

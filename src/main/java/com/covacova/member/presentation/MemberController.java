@@ -2,14 +2,18 @@ package com.covacova.member.presentation;
 
 import com.covacova.global.response.ApiResponse;
 import com.covacova.member.application.MemberService;
+import com.covacova.member.presentation.request.SignupRequest;
+import com.covacova.member.presentation.response.EmailCheckResponse;
+import com.covacova.member.presentation.response.SignupResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
+@Validated
 @RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
@@ -28,5 +32,11 @@ public class MemberController {
         );
 
         return ApiResponse.success(new SignupResponse(memberId));
+    }
+
+    @GetMapping("/check-email")
+    public ApiResponse<EmailCheckResponse> checkEmail(@RequestParam @Email @NotBlank String email) {
+
+        return ApiResponse.success(new EmailCheckResponse(memberService.isEmailAvailable(email)));
     }
 }
