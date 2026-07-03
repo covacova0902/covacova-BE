@@ -38,4 +38,6 @@ public class MemberRepositoryTest {
     void 없는_닉네임으로_조회하면_false를_반환한다() {
         assertThat(memberRepository.existsByNickname("없는닉네임999")).isFalse();
     }
+
+
 }
