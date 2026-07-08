@@ -2,9 +2,9 @@ package com.covacova.member.presentation;
 
 import com.covacova.global.response.ApiResponse;
 import com.covacova.member.application.MemberService;
-import com.covacova.member.presentation.request.SignupRequest;
-import com.covacova.member.presentation.response.EmailCheckResponse;
-import com.covacova.member.presentation.response.SignupResponse;
+import com.covacova.member.dto.request.SignupRequest;
+import com.covacova.member.dto.response.EmailCheckResponse;
+import com.covacova.member.dto.response.SignupResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
