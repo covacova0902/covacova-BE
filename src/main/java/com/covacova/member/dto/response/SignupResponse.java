@@ -1,4 +1,4 @@
-package com.covacova.member.presentation.response;
+package com.covacova.member.dto.response;
 
 public record SignupResponse(
         Long memberId
