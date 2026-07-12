@@ -2,6 +2,7 @@ package com.covacova.global.error;
 
 import com.covacova.global.response.ApiResponse;
 import com.covacova.member.exception.DuplicateEmailException;
+import com.covacova.member.exception.InvalidRefreshTokenException;
 import com.covacova.member.exception.NicknameGenerationException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -63,6 +64,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(LockedException.class)
     public ResponseEntity<ApiResponse<Void>> handleLocked(LockedException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error("탈퇴한 회원입니다."));
+    }
+
+    //리프레시 토큰 검증 실패 예외
+    @ExceptionHandler(InvalidRefreshTokenException.class)
+    public ResponseEntity<ApiResponse<Void>> handleInvalidRefreshToken(InvalidRefreshTokenException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error(e.getMessage()));
     }
 
     //위에서 잡지 못한 나머지 예외
