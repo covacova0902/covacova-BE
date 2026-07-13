@@ -1,6 +1,7 @@
 package com.covacova.global.error;
 
 import com.covacova.global.response.ApiResponse;
+import com.covacova.global.response.FieldErrorResponse;
 import com.covacova.member.exception.DuplicateEmailException;
 import com.covacova.member.exception.InvalidRefreshTokenException;
 import com.covacova.member.exception.NicknameGenerationException;
@@ -10,10 +11,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -24,11 +29,15 @@ public class GlobalExceptionHandler {
     //Valid 검증 실패 시 예외
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Void>> handleValidation(MethodArgumentNotValidException e) {
-        String message = e.getBindingResult().getFieldErrors().stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                .collect(Collectors.joining(", "));
+        List<FieldErrorResponse> errors = e.getBindingResult().getFieldErrors().stream()
+                .collect(Collectors.toMap(
+                        FieldError::getField,
+                        fe -> new FieldErrorResponse(fe.getField(), fe.getDefaultMessage()),
+                        (first, second) -> first,
+                        LinkedHashMap::new))
+                .values().stream().toList();
 
-        return ResponseEntity.badRequest().body(ApiResponse.error(message));
+        return ResponseEntity.badRequest().body(ApiResponse.validationError("입력값을 확인해주세요.", errors));
     }
 
     //이메일 중복 예외
@@ -45,13 +54,14 @@ public class GlobalExceptionHandler {
     }
 
     //파라미터 단위 검증 실패 시 예외
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ApiResponse<Void>> handleConstraintViolation(ConstraintViolationException e) {
-        String message = e.getConstraintViolations().stream()
-                .map(v -> v.getPropertyPath() + ": " + v.getMessage())
-                .collect(Collectors.joining(", "));
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<ApiResponse<Void>> handleHandlerMethodValidation(HandlerMethodValidationException e) {
+        List<FieldErrorResponse> errors = e.getParameterValidationResults().stream()
+                .map(result -> new FieldErrorResponse(
+                        result.getMethodParameter().getParameterName(),
+                        result.getResolvableErrors().get(0).getDefaultMessage())).toList();
 
-        return ResponseEntity.badRequest().body(ApiResponse.error(message));
+        return ResponseEntity.badRequest().body(ApiResponse.validationError("입력값을 확인해주세요.", errors));
     }
 
     //이메일 또는 비밀번호 실패 예외

@@ -9,11 +9,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@Validated
 @RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
@@ -35,7 +34,9 @@ public class MemberController {
     }
 
     @GetMapping("/check-email")
-    public ApiResponse<EmailCheckResponse> checkEmail(@RequestParam @Email @NotBlank String email) {
+    public ApiResponse<EmailCheckResponse> checkEmail(@RequestParam @Email(message = "이메일 형식이 올바르지 않습니다.") @Pattern(regexp =
+            "^[\\w.+-]+@[\\w-]+\\.[A-Za-z]{2,}$", message =
+            "이메일 형식이 올바르지 않습니다.") @NotBlank(message = "이메일을 입력해주세요.") String email) {
 
         return ApiResponse.success(new EmailCheckResponse(memberService.isEmailAvailable(email)));
     }

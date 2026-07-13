@@ -3,9 +3,12 @@ package com.covacova.member.dto.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 public record LoginRequest(@Schema(description = "이메일", example = "user@example.com")
-                           @NotBlank @Email String email,
+                           @NotBlank(message = "이메일을 입력해주세요.") @Email(message = "이메일 형식이 올바르지 않습니다.") @Pattern(regexp =
+        "^[\\w.+-]+@[\\w-]+\\.[A-Za-z]{2,}$", message =
+        "이메일 형식이 올바르지 않습니다.") String email,
                            @Schema(description = "비밀번호")
-                           @NotBlank String password) {
+                           @NotBlank(message = "비밀번호를 입력해주세요.") String password) {
 }

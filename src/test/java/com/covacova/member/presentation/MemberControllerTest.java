@@ -1,6 +1,8 @@
 package com.covacova.member.presentation;
 
 import com.covacova.global.security.SecurityConfig;
+import com.covacova.global.security.auth.CustomUserDetailsService;
+import com.covacova.global.security.jwt.JwtTokenProvider;
 import com.covacova.member.application.MemberService;
 import com.covacova.member.exception.DuplicateEmailException;
 
@@ -34,6 +36,12 @@ public class MemberControllerTest {
 
     @MockitoBean
     private MemberService memberService;
+
+    @MockitoBean
+    private JwtTokenProvider jwtTokenProvider;
+
+    @MockitoBean
+    private CustomUserDetailsService customUserDetailsService;
 
     @Test
     void 정상_회원가입_요청이면_200과_memberId를_반환한다() throws Exception {
