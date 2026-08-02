@@ -24,7 +24,7 @@ public class EmailSender {
             message.setText(text);
             javaMailSender.send(message);
         } catch (MailException e) {
-            log.error("메일 발송 실패: to={}", to, e);
+            log.error("메일 발송 실패: ", e);
         }
     }
 }
