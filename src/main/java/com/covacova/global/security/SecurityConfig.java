@@ -53,6 +53,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/reissue").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/logout").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/password/reset-request").permitAll()
                         .requestMatchers(
                                 "/api/swagger-ui.html",
                                 "/api/swagger-ui/**",
